@@ -3,12 +3,22 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useState } from 'react';
 import UpcomingTestsSection from '../components/UpcomingTestsSection';
+import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
+  const { data, status } = useSession();
+
+  const { data: placementEvents, isLoading } = trpc.useQuery([
+    'placement.get-placement-upcoming-events',
+  ]);
+
   const [selectedTab, setSelectedTab] = useState<'EXPERIENCES' | 'TESTS'>(
     'EXPERIENCES'
   );
-  const { data, status } = useSession();
+
+  if (isLoading) {
+    return <div>...</div>;
+  }
 
   if (status === 'loading') {
     return <div>'...Loading'</div>;
@@ -31,25 +41,23 @@ const Home: NextPage = () => {
       </Head>
       <div className="drawer drawer-mobile">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content flex flex-col items-center justify-center">
+        <div className="drawer-content">
           <label
             htmlFor="my-drawer-2"
             className="btn btn-primary drawer-button lg:hidden"
           >
             Open drawer
           </label>
-          <div>
-            {selectedTab === 'EXPERIENCES' ? (
-              <>
-                <h1 className="text-3xl text-center font-bold">
-                  Welcome {name}!
-                </h1>
-                <button onClick={() => signOut()}>Sign Out</button>
-              </>
-            ) : (
-              <UpcomingTestsSection />
-            )}
-          </div>
+          {selectedTab === 'EXPERIENCES' ? (
+            <>
+              <h1 className="text-3xl text-center font-bold">
+                Welcome {name}!
+              </h1>
+              <button onClick={() => signOut()}>Sign Out</button>
+            </>
+          ) : (
+            <UpcomingTestsSection placementEvents={placementEvents} />
+          )}
         </div>
         <div className="drawer-side">
           <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
