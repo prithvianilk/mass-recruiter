@@ -58,3 +58,11 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model PlacementEvent {
+    id                     String   @id @default(cuid())
+    companyName            String
+    deadlineOfRegistration DateTime
+    registratonLink        String
+    testTime               DateTime
+}
