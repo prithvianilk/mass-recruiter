@@ -24,7 +24,7 @@ const UpcomingTestsSection: React.FC<UpcomingTestsSectionProps> = ({
   placementEvents,
 }) => {
   return (
-    <ul className="w-2/3">
+    <ul className="md:w-2/3 w-5/6">
       {placementEvents?.map(
         ({
           companyName,
@@ -40,6 +40,8 @@ const UpcomingTestsSection: React.FC<UpcomingTestsSectionProps> = ({
             <div className="flex justify-between">
               <h1 className="text-2xl">{companyName}</h1>
               <a
+                target="_blank"
+                rel="noreferrer"
                 className="link link-hover text-secondary flex flex-col justify-center"
                 href={registratonLink}
               >
@@ -54,8 +56,17 @@ const UpcomingTestsSection: React.FC<UpcomingTestsSectionProps> = ({
                 </div>
                 <div>Test Date: {prettifyDate(testTime)}</div>
               </div>
-              <button className="flex justify-center flex-col mr-8 text-yellow-300">
-                <TbBellRinging size={25} />
+              <button className="flex justify-evenly w-1/6 text-yellow-300">
+                <div className="tooltip" data-tip="I have registered!">
+                  <input
+                    type="checkbox"
+                    checked={true}
+                    className="checkbox checkbox-accent"
+                  />
+                </div>
+                <div className="tooltip" data-tip="Notify me before the test">
+                  <TbBellRinging size={25} />
+                </div>
               </button>
             </div>
           </li>

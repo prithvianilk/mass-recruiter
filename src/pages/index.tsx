@@ -21,7 +21,7 @@ const Home: NextPage = () => {
   }
 
   if (status === 'loading') {
-    return <div>'...Loading'</div>;
+    return <div>...Loading</div>;
   } else if (status === 'unauthenticated') {
     return (
       <div>
@@ -41,13 +41,13 @@ const Home: NextPage = () => {
       </Head>
       <div className="drawer drawer-mobile">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content">
-          <label
+        <div className="drawer-content w-full flex justify-center">
+          {/* <label
             htmlFor="my-drawer-2"
             className="btn btn-primary drawer-button lg:hidden"
           >
             Open drawer
-          </label>
+          </label> */}
           {selectedTab === 'EXPERIENCES' ? (
             <>
               <h1 className="text-3xl text-center font-bold">
