@@ -45,6 +45,8 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    posts         Post[]
+    @@unique([id,name])
 }
 
 model VerificationToken {
@@ -53,6 +55,14 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Post {
+    id       String @id @default(cuid())
+    name     String
+    userID   String 
+    postBody String
+    User     User   @relation(fields: [userID,name], references: [id,name], onDelete: Cascade)
 }
 
 model PlacementEvent {

@@ -31,7 +31,7 @@ const Home: NextPage = () => {
   }
 
   const name = data?.user?.name;
-
+  const imgSrc=data?.user?.image
   return (
     <>
       <Head>
@@ -52,6 +52,7 @@ const Home: NextPage = () => {
             <>
               <h1 className="text-3xl text-center font-bold">
                 Welcome {name}!
+                <img src={imgSrc!}/>
               </h1>
               <button onClick={() => signOut()}>Sign Out</button>
             </>
@@ -63,7 +64,7 @@ const Home: NextPage = () => {
           <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
           <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
             <li onClick={() => setSelectedTab('EXPERIENCES')}>
-              <a>Placement Expiriences</a>
+              <a>Placement Experiences</a>
             </li>
             <li onClick={() => setSelectedTab('TESTS')}>
               <a>Upcoming Placement Tests</a>

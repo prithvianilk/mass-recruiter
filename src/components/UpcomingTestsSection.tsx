@@ -1,6 +1,7 @@
 import { PlacementEvent } from '@prisma/client';
 import { TbBellRinging } from 'react-icons/tb';
 import { monthNames } from '../utils/date';
+import { days } from '../utils/date';
 
 type UpcomingTestsSectionProps = {
   placementEvents: PlacementEvent[] | undefined;
@@ -8,6 +9,18 @@ type UpcomingTestsSectionProps = {
 
 const prettifyDate = (date: Date) => {
   const day = date.getDate();
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  let timeSub = 'PM';
+  const dayString = days[date.getDay()]?.slice(0, 3);
+  const monthString = monthNames[date.getMonth()]?.slice(0, 3);
+  if (hours < 12) {
+    timeSub = 'AM';
+  } else {
+    if (hours != 12) {
+      hours -= 12;
+    }
+  }
   let subscript = 'th';
   if (day === 1) {
     subscript = 'st';
@@ -16,8 +29,7 @@ const prettifyDate = (date: Date) => {
   } else if (day === 3) {
     subscript = 'rd';
   }
-  //TODO: 9PM 1st Jan (Wed)
-  return `${day}${subscript} ${monthNames[date.getMonth()]}`;
+  return `${day}${subscript} ${monthString} (${dayString}) @ ${hours}:${minutes} ${timeSub}`;
 };
 
 const UpcomingTestsSection: React.FC<UpcomingTestsSectionProps> = ({

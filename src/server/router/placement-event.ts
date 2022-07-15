@@ -8,4 +8,10 @@ export const placementRouter = createRouter().query(
       return await prisma.placementEvent.findMany();
     },
   }
-);
+)
+.query('get-all-posts',{
+  async resolve() {
+    return await prisma.post.findMany();
+  },
+})
+;
