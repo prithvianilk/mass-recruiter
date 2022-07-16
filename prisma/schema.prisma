@@ -43,10 +43,13 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    mobileNumber  String?
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
-    @@unique([id,name])
+
+    PlacementEvent2UserNotify PlacementEvent2UserNotify[]
+    @@unique([id, name])
 }
 
 model VerificationToken {
@@ -60,15 +63,25 @@ model VerificationToken {
 model Post {
     id       String @id @default(cuid())
     name     String
-    userID   String 
+    userID   String
     postBody String
-    User     User   @relation(fields: [userID,name], references: [id,name], onDelete: Cascade)
+    User     User   @relation(fields: [userID, name], references: [id, name], onDelete: Cascade)
 }
 
 model PlacementEvent {
-    id                     String   @id @default(cuid())
-    companyName            String
-    deadlineOfRegistration DateTime
-    registratonLink        String
-    testTime               DateTime
+    id                        String                      @id @default(cuid())
+    companyName               String
+    deadlineOfRegistration    DateTime
+    registratonLink           String
+    testTime                  DateTime
+    is2hReminderSent          Boolean
+    PlacementEvent2UserNotify PlacementEvent2UserNotify[]
+}
+
+model PlacementEvent2UserNotify {
+    id             String         @id @default(cuid())
+    userId         String
+    eventId        String
+    User           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+    PlacementEvent PlacementEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
 }
