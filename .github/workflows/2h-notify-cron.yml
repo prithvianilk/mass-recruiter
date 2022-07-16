@@ -9,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: cURL request
-        run: curl -X POST https://mass-recruiter/api/2h-notify-cron
+        run: curl -X POST https://mass-recruiter.vercel.app/api/2h-notify-cron
