@@ -48,7 +48,7 @@ model User {
     sessions      Session[]
     posts         Post[]
 
-    PlacementEvent2UserNotify PlacementEvent2UserNotify[]
+    PlacementEventUserNotification PlacementEventUserNotification[]
     @@unique([id, name])
 }
 
@@ -69,16 +69,15 @@ model Post {
 }
 
 model PlacementEvent {
-    id                        String                      @id @default(cuid())
-    companyName               String
-    deadlineOfRegistration    DateTime
-    registratonLink           String
-    testTime                  DateTime
-    is2hReminderSent          Boolean
-    PlacementEvent2UserNotify PlacementEvent2UserNotify[]
+    id                             String                           @id @default(cuid())
+    companyName                    String
+    registrationDeadline           DateTime
+    registratonLink                String
+    testTime                       DateTime
+    PlacementEventUserNotification PlacementEventUserNotification[]
 }
 
-model PlacementEvent2UserNotify {
+model PlacementEventUserNotification {
     id             String         @id @default(cuid())
     userId         String
     eventId        String

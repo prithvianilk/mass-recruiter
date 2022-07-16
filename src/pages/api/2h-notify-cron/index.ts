@@ -10,16 +10,16 @@ export default async function TwoHourNotifyCron(
 ) {
   const postDeadlineTime = new Date(Date.now() + TWO_HOURS_IN_MILLISECONDS);
 
-  const notifyEvents = await prisma.placementEvent2UserNotify.findMany({
+  const notifyEvents = await prisma.placementEventUserNotification.findMany({
     where: {
       PlacementEvent: {
-        deadlineOfRegistration: {
+        registrationDeadline: {
           lte: postDeadlineTime,
         },
-        is2hReminderSent: false,
       },
     },
     select: {
+      id: true,
       User: {
         select: {
           mobileNumber: true,
@@ -29,7 +29,7 @@ export default async function TwoHourNotifyCron(
         select: {
           id: true,
           companyName: true,
-          deadlineOfRegistration: true,
+          registrationDeadline: true,
           registratonLink: true,
         },
       },
@@ -39,15 +39,11 @@ export default async function TwoHourNotifyCron(
   await Promise.all(
     notifyEvents.map(
       ({
-        PlacementEvent: {
-          companyName,
-          deadlineOfRegistration,
-          registratonLink,
-        },
+        PlacementEvent: { companyName, registrationDeadline, registratonLink },
         User: { mobileNumber },
       }) => {
         twilioClient.messages.create({
-          body: `${companyName}'s registration link is expiring at ${deadlineOfRegistration}. Please register at ${registratonLink} now.`,
+          body: `${companyName}'s registration link is expiring at ${registrationDeadline}. Please register at ${registratonLink} now.`,
           from: 'whatsapp:+14155238886',
           to: `whatsapp:+91${mobileNumber}`,
         });
@@ -55,16 +51,11 @@ export default async function TwoHourNotifyCron(
     )
   );
 
-  const placementEventIds = notifyEvents.map(
-    ({ PlacementEvent: { id } }) => id
-  );
+  const notifyEventIds = notifyEvents.map(({ id }) => id);
 
-  await prisma.placementEvent.updateMany({
+  await prisma.placementEventUserNotification.deleteMany({
     where: {
-      id: { in: placementEventIds },
-    },
-    data: {
-      is2hReminderSent: true,
+      id: { in: notifyEventIds },
     },
   });
 

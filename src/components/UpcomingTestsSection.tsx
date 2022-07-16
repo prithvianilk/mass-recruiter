@@ -40,7 +40,7 @@ const UpcomingTestsSection: React.FC<UpcomingTestsSectionProps> = ({
       {placementEvents?.map(
         ({
           companyName,
-          deadlineOfRegistration,
+          registrationDeadline,
           id,
           registratonLink,
           testTime,
@@ -64,7 +64,7 @@ const UpcomingTestsSection: React.FC<UpcomingTestsSectionProps> = ({
             <div className="flex justify-between">
               <div>
                 <div>
-                  Registration Deadline: {prettifyDate(deadlineOfRegistration)}
+                  Registration Deadline: {prettifyDate(registrationDeadline)}
                 </div>
                 <div>Test Date: {prettifyDate(testTime)}</div>
               </div>
