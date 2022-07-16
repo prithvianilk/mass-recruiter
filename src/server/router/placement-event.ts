@@ -8,4 +8,5 @@ export const placementRouter = createRouter().query(
       return await prisma.placementEvent.findMany();
     },
   }
-);
+)
+
