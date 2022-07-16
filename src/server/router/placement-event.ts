@@ -9,9 +9,4 @@ export const placementRouter = createRouter().query(
     },
   }
 )
-.query('get-all-posts',{
-  async resolve() {
-    return await prisma.post.findMany();
-  },
-})
-;
+
