@@ -1,7 +1,10 @@
 import type { NextPage } from 'next';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
+import Image from 'next/image';
 import { useState } from 'react';
+import PostEditTextBox from '../components/PostEditTextBox';
+import { PostListBox } from '../components/PostListBox';
 import UpcomingTestsSection from '../components/UpcomingTestsSection';
 import { trpc } from '../utils/trpc';
 
@@ -30,8 +33,8 @@ const Home: NextPage = () => {
     );
   }
 
-  const name = data?.user?.name;
-  const imgSrc=data?.user?.image
+  const { name, image, id } = data?.user!;
+
   return (
     <>
       <Head>
@@ -49,13 +52,10 @@ const Home: NextPage = () => {
             Open drawer
           </label> */}
           {selectedTab === 'EXPERIENCES' ? (
-            <>
-              <h1 className="text-3xl text-center font-bold">
-                Welcome {name}!
-                <img src={imgSrc!}/>
-              </h1>
-              <button onClick={() => signOut()}>Sign Out</button>
-            </>
+            <div className="mt-20">
+              <PostEditTextBox userID={id!} />
+              <PostListBox />
+            </div>
           ) : (
             <UpcomingTestsSection placementEvents={placementEvents} />
           )}
@@ -63,11 +63,24 @@ const Home: NextPage = () => {
         <div className="drawer-side">
           <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
           <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
-            <li onClick={() => setSelectedTab('EXPERIENCES')}>
+            <div className="flex justify-evenly items-center">
+              <h1 className="text-2xl text-center font-bold flex justify-center flex-col">
+                {name}
+              </h1>
+              <div className="avatar">
+                <div className="w-10">
+                  <Image layout="fill" className="rounded-full" src={image!} />
+                </div>
+              </div>
+            </div>
+            <li className="mt-3" onClick={() => setSelectedTab('EXPERIENCES')}>
               <a>Placement Experiences</a>
             </li>
             <li onClick={() => setSelectedTab('TESTS')}>
               <a>Upcoming Placement Tests</a>
+            </li>
+            <li>
+              <button onClick={() => signOut()}>Sign Out</button>
             </li>
           </ul>
         </div>
