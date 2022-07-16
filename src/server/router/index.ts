@@ -7,7 +7,7 @@ import { placementRouter } from './placement-event';
 import { postsRouter } from './posts';
 
 export const appRouter = createRouter()
-  .transformer(superjson)
+ // .transformer(superjson)
   .merge('auth.', authRouter)
   .merge('placement.', placementRouter)
   .merge('posts.',postsRouter);

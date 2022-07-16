@@ -79,3 +79,4 @@ model PlacementEventUserNotification {
   PlacementEvent PlacementEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   User           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
