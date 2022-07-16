@@ -19,4 +19,22 @@ export const postsRouter = createRouter().mutation('create-post', {
     return await prisma.post.findMany();
   },
 })
+.mutation('edit-post',{
+  input:z.object({
+    postID:z.string(),
+    postBody:z.string(),
+  }),
+  async resolve({input:{postID,postBody}})
+  {
+    return await prisma.post.update({
+      where:{
+        id:postID
+      },
+      data:{
+        postBody:postBody
+      }
+    })
+  }
+})
+
 ;
