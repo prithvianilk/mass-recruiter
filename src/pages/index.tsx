@@ -69,7 +69,12 @@ const Home: NextPage = () => {
               </h1>
               <div className="avatar">
                 <div className="w-10">
-                  <Image layout="fill" className="rounded-full" src={image!} />
+                  <Image
+                    layout="fill"
+                    className="rounded-full"
+                    src={image!}
+                    alt="profile-picture"
+                  />
                 </div>
               </div>
             </div>

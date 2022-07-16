@@ -8,7 +8,7 @@ export const PostListBox = () => {
   return (
     <div className="my-2">
       {posts?.map(({ id, postBody }) => (
-        <li id={id}>{postBody}</li>
+        <li key={id}>{postBody}</li>
       ))}
     </div>
   );

@@ -8,13 +8,17 @@ export default async function TwoHourNotifyCron(
   _: NextApiRequest,
   res: NextApiResponse
 ) {
-  const postDeadlineTime = new Date(Date.now() + TWO_HOURS_IN_MILLISECONDS);
+  const postDeadline = new Date(
+    new Date().getTime() + TWO_HOURS_IN_MILLISECONDS
+  );
+
+  console.log('Received cron request at', postDeadline);
 
   const notifyEvents = await prisma.placementEventUserNotification.findMany({
     where: {
       PlacementEvent: {
         registrationDeadline: {
-          lte: postDeadlineTime,
+          lte: postDeadline,
         },
       },
     },
@@ -35,6 +39,8 @@ export default async function TwoHourNotifyCron(
       },
     },
   });
+
+  console.log(`Nofitications being sent: ${notifyEvents}`);
 
   await Promise.all(
     notifyEvents.map(
@@ -58,6 +64,8 @@ export default async function TwoHourNotifyCron(
       id: { in: notifyEventIds },
     },
   });
+
+  console.log('Cron successfully processed!');
 
   res.status(200);
   res.json({
