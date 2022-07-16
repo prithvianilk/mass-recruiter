@@ -1,6 +1,5 @@
 import { createRouter } from './context';
 import { z } from 'zod';
-import { prisma } from '../db/client';
 
 export const postsRouter = createRouter()
   .mutation('create-post', {
@@ -8,14 +7,14 @@ export const postsRouter = createRouter()
       userID: z.string(),
       postBody: z.string(),
     }),
-    async resolve({ input }) {
+    async resolve({ ctx: { prisma }, input }) {
       return await prisma.post.create({
         data: input,
       });
     },
   })
   .query('get-all-posts', {
-    async resolve() {
+    async resolve({ ctx: { prisma }, input }) {
       return await prisma.post.findMany();
     },
   })
@@ -24,7 +23,7 @@ export const postsRouter = createRouter()
       postID: z.string(),
       postBody: z.string(),
     }),
-    async resolve({ input: { postID, postBody } }) {
+    async resolve({ ctx: { prisma }, input: { postID, postBody } }) {
       return await prisma.post.update({
         where: {
           id: postID,
