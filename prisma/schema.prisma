@@ -41,9 +41,10 @@ model User {
   image                          String?
   mobileNumber                   String?
   accounts                       Account[]
-  PlacementEventUserNotification PlacementEventUserNotification[]
   posts                          Post[]
   sessions                       Session[]
+  PlacementEventUserNotification PlacementEventUserNotification[]
+  PlacementEventUserRegistration PlacementEventUserRegistration[]
 
   @@unique([id, name])
 }
@@ -70,6 +71,7 @@ model PlacementEvent {
   registratonLink                String
   testTime                       DateTime
   PlacementEventUserNotification PlacementEventUserNotification[]
+  PlacementEventUserRegistration PlacementEventUserRegistration[]
 }
 
 model PlacementEventUserNotification {
@@ -78,5 +80,17 @@ model PlacementEventUserNotification {
   eventId        String
   PlacementEvent PlacementEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
   User           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+}
+
+model PlacementEventUserRegistration {
+  id             String         @id @default(cuid())
+  userId         String
+  eventId        String
+  PlacementEvent PlacementEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  User           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
 }
 
