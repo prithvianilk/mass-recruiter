@@ -2,7 +2,7 @@ name: Trigger whatsapp notification sending API
 
 on:
   schedule:
-    - cron: '0 */10 * * * *'
+    - cron: '10 * * * *'
 jobs:
   build:
     name: Trigger Whatsapp Notification every 10 min
