@@ -10,18 +10,9 @@ import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
   const { data, status } = useSession();
-
-  const { data: placementEvents, isLoading } = trpc.useQuery([
-    'placement.get-placement-upcoming-events',
-  ]);
-
   const [selectedTab, setSelectedTab] = useState<'EXPERIENCES' | 'TESTS'>(
     'EXPERIENCES'
   );
-
-  if (isLoading) {
-    return <div>...</div>;
-  }
 
   if (status === 'loading') {
     return <div>...Loading</div>;
@@ -33,7 +24,7 @@ const Home: NextPage = () => {
     );
   }
 
-  const { name, image, id } = data?.user!;
+  const { name, image, id: userId } = data?.user!;
 
   return (
     <>
@@ -53,11 +44,11 @@ const Home: NextPage = () => {
           </label> */}
           {selectedTab === 'EXPERIENCES' ? (
             <div className="mt-20">
-              <PostEditTextBox userID={id!} />
+              <PostEditTextBox userId={userId!} />
               <PostListBox />
             </div>
           ) : (
-            <UpcomingTestsSection placementEvents={placementEvents} />
+            <UpcomingTestsSection />
           )}
         </div>
         <div className="drawer-side">

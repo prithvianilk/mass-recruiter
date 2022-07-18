@@ -1,11 +1,48 @@
 import { z } from 'zod';
 import { createRouter } from './context';
-import { prisma } from '../db/client';
 
 export const placementRouter = createRouter()
   .query('get-placement-upcoming-events', {
-    async resolve() {
-      return await prisma.placementEvent.findMany();
+    async resolve({ ctx: { prisma, session } }) {
+      const userId = session?.user?.id;
+      const events = await prisma.placementEvent.findMany({
+        select: {
+          id: true,
+          companyName: true,
+          registrationDeadline: true,
+          registratonLink: true,
+          testTime: true,
+          PlacementEventUserRegistration: {
+            where: {
+              userId,
+            },
+          },
+          PlacementEventUserNotification: {
+            where: {
+              userId,
+            },
+          },
+        },
+      });
+      return events.map(
+        ({
+          id,
+          companyName,
+          PlacementEventUserNotification,
+          PlacementEventUserRegistration,
+          registrationDeadline,
+          registratonLink,
+          testTime,
+        }) => ({
+          id,
+          companyName,
+          registrationDeadline,
+          registratonLink,
+          testTime,
+          wantsNotification: PlacementEventUserNotification.length > 0,
+          hasRegistered: PlacementEventUserRegistration.length > 0,
+        })
+      );
     },
   })
   .mutation('notify-event', {

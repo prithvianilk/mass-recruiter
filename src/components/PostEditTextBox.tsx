@@ -1,16 +1,25 @@
 import { useState } from 'react';
 import { trpc } from '../utils/trpc';
 
-const PostEditTextBox: React.FC<{ userID: string }> = ({ userID }) => {
+const PostEditTextBox: React.FC<{ userId: string }> = ({ userId }) => {
   const [text, setText] = useState<string>('');
 
+  const { refetch } = trpc.useQuery(['posts.get-all-posts']);
   const { mutate: createPost } = trpc.useMutation('posts.create-post');
 
   const onSubmit = () => {
-    createPost({
-      userID,
-      postBody: text,
-    });
+    createPost(
+      {
+        userId,
+        postBody: text,
+      },
+      {
+        onSuccess: () => {
+          setText('');
+          refetch();
+        },
+      }
+    );
   };
 
   return (

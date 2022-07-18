@@ -4,7 +4,7 @@ import { z } from 'zod';
 export const postsRouter = createRouter()
   .mutation('create-post', {
     input: z.object({
-      userID: z.string(),
+      userId: z.string(),
       postBody: z.string(),
     }),
     async resolve({ ctx: { prisma }, input }) {
@@ -14,19 +14,19 @@ export const postsRouter = createRouter()
     },
   })
   .query('get-all-posts', {
-    async resolve({ ctx: { prisma }, input }) {
+    async resolve({ ctx: { prisma } }) {
       return await prisma.post.findMany();
     },
   })
   .mutation('edit-post', {
     input: z.object({
-      postID: z.string(),
+      postId: z.string(),
       postBody: z.string(),
     }),
-    async resolve({ ctx: { prisma }, input: { postID, postBody } }) {
+    async resolve({ ctx: { prisma }, input: { postId, postBody } }) {
       return await prisma.post.update({
         where: {
-          id: postID,
+          id: postId,
         },
         data: {
           postBody: postBody,
