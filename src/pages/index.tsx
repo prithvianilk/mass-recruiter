@@ -3,8 +3,9 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
+import CenterSpinner from '../components/CenterSpinner';
 import PostEditTextBox from '../components/PostEditTextBox';
-import { PostListBox } from '../components/PostListBox';
+import { PostListView } from '../components/PostListView';
 import Toast from '../components/Toast';
 import UpcomingTestsSection from '../components/UpcomingTestsSection';
 
@@ -15,11 +16,7 @@ const Home: NextPage = () => {
   );
 
   if (status === 'loading') {
-    return (
-      <div className="w-full h-screen flex justify-center items-center">
-        Loading...
-      </div>
-    );
+    return <CenterSpinner />;
   } else if (status === 'unauthenticated') {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -28,7 +25,7 @@ const Home: NextPage = () => {
     );
   }
 
-  const { name, image, id: userId } = data?.user!;
+  const { name, image } = data?.user!;
 
   return (
     <>
@@ -47,10 +44,7 @@ const Home: NextPage = () => {
             Open drawer
           </label> */}
           {selectedTab === 'EXPERIENCES' ? (
-            <div className="mt-20">
-              <PostEditTextBox userId={userId!} />
-              <PostListBox />
-            </div>
+            <PostListView />
           ) : (
             <UpcomingTestsSection />
           )}

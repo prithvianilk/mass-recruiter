@@ -5,6 +5,7 @@ import { TbBellOff, TbBellRinging } from 'react-icons/tb';
 import { prettifyDate } from '../utils/date';
 import useStore from '../utils/store';
 import { trpc } from '../utils/trpc';
+import CenterSpinner from './CenterSpinner';
 
 type PlacementEventCardProps = PlacementEvent & {
   hasRegistered: boolean;
@@ -160,7 +161,7 @@ const UpcomingTestsSection = () => {
   ]);
 
   if (isLoading) {
-    return <div>...</div>;
+    return <CenterSpinner />;
   }
 
   const onToggle = async (

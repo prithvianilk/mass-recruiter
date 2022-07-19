@@ -1,7 +1,11 @@
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { trpc } from '../utils/trpc';
 
-const PostEditTextBox: React.FC<{ userId: string }> = ({ userId }) => {
+const PostEditTextBox: React.FC = () => {
+  const { data } = useSession();
+
+  const userId = data?.user?.id!;
   const [text, setText] = useState<string>('');
 
   const { refetch } = trpc.useQuery(['posts.get-all-posts']);
