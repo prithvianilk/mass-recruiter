@@ -1,8 +1,9 @@
 import { PlacementEvent } from '@prisma/client';
 import { useSession } from 'next-auth/react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { TbBellOff, TbBellRinging } from 'react-icons/tb';
 import { prettifyDate } from '../utils/date';
+import useStore from '../utils/store';
 import { trpc } from '../utils/trpc';
 
 type PlacementEventCardProps = PlacementEvent & {
@@ -11,14 +12,16 @@ type PlacementEventCardProps = PlacementEvent & {
   onToggleRegistration: (
     eventId: string,
     hasRegistered: boolean,
+    type: 'REGISTER' | 'NOTIFY',
     setDisabled: (state: boolean) => void,
-    setLocalHasRegistered: Dispatch<SetStateAction<boolean>>
+    toggleState: () => void
   ) => Promise<void>;
   onToggleNotification: (
     eventId: string,
     hasRegistered: boolean,
+    type: 'REGISTER' | 'NOTIFY',
     setDisabled: (state: boolean) => void,
-    setLocalHasRegistered: Dispatch<SetStateAction<boolean>>
+    toggleState: () => void
   ) => Promise<void>;
 };
 
@@ -44,6 +47,8 @@ const PlacementEventCard: React.FC<PlacementEventCardProps> = ({
 
   const [localWantsNotification, setLocalWantsNotification] =
     useState<boolean>(wantsNotification);
+
+  const { remove, add } = useStore();
 
   return (
     <li className="p-4 card-bordered border-secondary rounded my-5">
@@ -72,8 +77,19 @@ const PlacementEventCard: React.FC<PlacementEventCardProps> = ({
                 onToggleRegistration(
                   id,
                   localHasRegistered,
+                  'REGISTER',
                   setRegistrationDisabled,
-                  setLocalHasRegistered
+                  () => {
+                    add(
+                      <div key={`${id}-register-toast`} className="alert">
+                        Marked{' '}
+                        {!localHasRegistered ? 'registered' : 'unregistered'}{' '}
+                        for {companyName}
+                      </div>
+                    );
+                    setLocalHasRegistered(!localHasRegistered);
+                    setTimeout(remove, 3000);
+                  }
                 );
               }}
               className="checkbox checkbox-accent"
@@ -89,8 +105,18 @@ const PlacementEventCard: React.FC<PlacementEventCardProps> = ({
                   onToggleNotification(
                     id,
                     localWantsNotification,
+                    'NOTIFY',
                     setNotificationDisabled,
-                    setLocalWantsNotification
+                    () => {
+                      setLocalWantsNotification(!localWantsNotification);
+                      add(
+                        <div key={`${id}-notify-toast`} className="alert">
+                          {localWantsNotification ? 'Removed' : 'Added'}{' '}
+                          Notification for {companyName}
+                        </div>
+                      );
+                      setTimeout(remove, 3000);
+                    }
                   );
                 }
               }}
@@ -137,36 +163,29 @@ const UpcomingTestsSection = () => {
     return <div>...</div>;
   }
 
-  const onToggleRegistration = async (
+  const onToggle = async (
     eventId: string,
-    hasRegistered: boolean,
+    state: boolean,
+    type: 'REGISTER' | 'NOTIFY',
     setDisabled: (state: boolean) => void,
-    setLocalHasRegistered: Dispatch<SetStateAction<boolean>>
+    toggleState: () => void
   ) => {
     setDisabled(true);
-    if (hasRegistered) {
-      await deleteRegistration({ eventId, userId });
+    if (type === 'NOTIFY') {
+      if (!state) {
+        await notifyEvent({ eventId, userId });
+      } else {
+        await unnotifyEvent({ eventId, userId });
+      }
     } else {
-      await confirmRegistration({ eventId, userId });
+      if (state) {
+        await deleteRegistration({ eventId, userId });
+      } else {
+        await confirmRegistration({ eventId, userId });
+      }
     }
     setDisabled(false);
-    setLocalHasRegistered(!hasRegistered);
-  };
-
-  const onToggleNotification = async (
-    eventId: string,
-    wantsNotification: boolean,
-    setDisabled: (state: boolean) => void,
-    setLocalWantsNotification: Dispatch<SetStateAction<boolean>>
-  ) => {
-    setDisabled(true);
-    if (!wantsNotification) {
-      await notifyEvent({ eventId, userId });
-    } else {
-      await unnotifyEvent({ eventId, userId });
-    }
-    setDisabled(false);
-    setLocalWantsNotification(!wantsNotification);
+    toggleState();
   };
 
   return (
@@ -175,8 +194,8 @@ const UpcomingTestsSection = () => {
         <PlacementEventCard
           key={event.id}
           {...event}
-          onToggleRegistration={onToggleRegistration}
-          onToggleNotification={onToggleNotification}
+          onToggleRegistration={onToggle}
+          onToggleNotification={onToggle}
         />
       ))}
     </ul>

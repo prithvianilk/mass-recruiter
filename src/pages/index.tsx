@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import PostEditTextBox from '../components/PostEditTextBox';
 import { PostListBox } from '../components/PostListBox';
+import Toast from '../components/Toast';
 import UpcomingTestsSection from '../components/UpcomingTestsSection';
-import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
   const { data, status } = useSession();
@@ -15,10 +15,14 @@ const Home: NextPage = () => {
   );
 
   if (status === 'loading') {
-    return <div>...Loading</div>;
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        Loading...
+      </div>
+    );
   } else if (status === 'unauthenticated') {
     return (
-      <div>
+      <div className="w-full h-screen flex justify-center items-center">
         <button onClick={() => signIn()}>Sign In</button>
       </div>
     );
@@ -75,12 +79,13 @@ const Home: NextPage = () => {
             <li onClick={() => setSelectedTab('TESTS')}>
               <a>Upcoming Placement Tests</a>
             </li>
-            <li>
-              <button onClick={() => signOut()}>Sign Out</button>
+            <li onClick={() => signOut()}>
+              <button>Sign Out</button>
             </li>
           </ul>
         </div>
       </div>
+      <Toast />
     </>
   );
 };
