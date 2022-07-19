@@ -2,6 +2,12 @@ import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { trpc } from '../utils/trpc';
 
+import '@uiw/react-markdown-preview/markdown.css';
+import '@uiw/react-md-editor/markdown-editor.css';
+import dynamic from 'next/dynamic';
+
+const Editor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
+
 const PlacementExperienceModal: React.FC<{
   isOpen: boolean;
   closeModal: () => void;
@@ -30,28 +36,30 @@ const PlacementExperienceModal: React.FC<{
   return (
     <>
       <label className={`modal ${isOpen && 'modal-open'}`}>
-        <div className="modal-box relative">
-          <h3 className="font-bold text-lg">Share your Inverview Experience</h3>
-          <label
-            className="btn btn-sm btn-circle absolute right-2 top-2"
-            onClick={closeModal}
-          >
-            ✕
-          </label>
-          <input
-            type="text"
-            placeholder="Title"
-            className="input input-bordered w-full max-w-xs"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <textarea
-            className="textarea textarea-bordered w-30 h-30 my-2"
+        <div className="modal-box w-11/12 max-w-5xl relative">
+          <div className="flex justify-between">
+            <h3 className="font-bold text-lg">
+              Share your Inverview Experience
+            </h3>
+            <label className="btn btn-sm btn-circle" onClick={closeModal}>
+              ✕
+            </label>
+          </div>
+          <div className="py-5 w-full">
+            <input
+              type="text"
+              placeholder="Title"
+              className="input w-full"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <Editor
             placeholder="..."
             value={body}
-            onChange={(e) => setBody(e.target.value)}
+            onChange={(value) => setBody(value!)}
           />
-          <div className="flex justify-end">
+          <div className="py-5 flex justify-end">
             <button className="btn" onClick={onSubmit}>
               Post
             </button>
