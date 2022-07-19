@@ -1,8 +1,9 @@
 import { trpc } from '../utils/trpc';
 import CenterSpinner from './CenterSpinner';
-import PostEditTextBox from './PostEditTextBox';
 
-export const PostListView = () => {
+export const PostListView: React.FC<{ openModal: () => void }> = ({
+  openModal,
+}) => {
   const { data: posts, isLoading } = trpc.useQuery(['posts.get-all-posts']);
 
   if (isLoading) {
@@ -10,13 +11,15 @@ export const PostListView = () => {
   }
 
   return (
-    <div className="mt-20">
-      <PostEditTextBox />
-      <div className="my-2">
+    <>
+      <button className="btn" onClick={openModal}>
+        open modal
+      </button>
+      <div className="mt-20">
         {posts?.map(({ id, postBody }) => (
           <li key={id}>{postBody}</li>
         ))}
       </div>
-    </div>
+    </>
   );
 };

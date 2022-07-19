@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
 import CenterSpinner from '../components/CenterSpinner';
-import PostEditTextBox from '../components/PostEditTextBox';
+import PlacementExperienceModal from '../components/PlacementExperienceModal';
 import { PostListView } from '../components/PostListView';
 import Toast from '../components/Toast';
 import UpcomingTestsSection from '../components/UpcomingTestsSection';
@@ -27,6 +27,8 @@ const Home: NextPage = () => {
 
   const { name, image } = data?.user!;
 
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+
   return (
     <>
       <Head>
@@ -44,7 +46,7 @@ const Home: NextPage = () => {
             Open drawer
           </label> */}
           {selectedTab === 'EXPERIENCES' ? (
-            <PostListView />
+            <PostListView openModal={() => setModalOpen(true)} />
           ) : (
             <UpcomingTestsSection />
           )}
@@ -80,6 +82,10 @@ const Home: NextPage = () => {
         </div>
       </div>
       <Toast />
+      <PlacementExperienceModal
+        isOpen={isModalOpen}
+        closeModal={() => setModalOpen(false)}
+      />
     </>
   );
 };
