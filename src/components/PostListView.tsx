@@ -16,8 +16,11 @@ export const PostListView: React.FC<{ openModal: () => void }> = ({
         open modal
       </button>
       <div className="mt-20">
-        {posts?.map(({ id, postBody }) => (
-          <li key={id}>{postBody}</li>
+        {posts?.map(({ id, title, body }) => (
+          <li key={id}>
+            <h3>{title}</h3>
+            <p>{body}</p>
+          </li>
         ))}
       </div>
     </>

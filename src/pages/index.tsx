@@ -11,9 +11,12 @@ import UpcomingTestsSection from '../components/UpcomingTestsSection';
 
 const Home: NextPage = () => {
   const { data, status } = useSession();
+
   const [selectedTab, setSelectedTab] = useState<'EXPERIENCES' | 'TESTS'>(
     'EXPERIENCES'
   );
+
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   if (status === 'loading') {
     return <CenterSpinner />;
@@ -26,8 +29,6 @@ const Home: NextPage = () => {
   }
 
   const { name, image } = data?.user!;
-
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   return (
     <>

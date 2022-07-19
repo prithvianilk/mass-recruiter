@@ -9,7 +9,8 @@ const PlacementExperienceModal: React.FC<{
   const { data } = useSession();
 
   const userId = data?.user?.id!;
-  const [text, setText] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [body, setBody] = useState<string>('');
 
   const { refetch } = trpc.useQuery(['posts.get-all-posts']);
   const { mutateAsync: createPost } = trpc.useMutation('posts.create-post');
@@ -17,9 +18,11 @@ const PlacementExperienceModal: React.FC<{
   const onSubmit = async () => {
     await createPost({
       userId,
-      postBody: text,
+      title,
+      body,
     });
-    setText('');
+    setTitle('');
+    setBody('');
     refetch();
     closeModal();
   };
@@ -37,14 +40,16 @@ const PlacementExperienceModal: React.FC<{
           </label>
           <input
             type="text"
-            placeholder="Type here"
+            placeholder="Title"
             className="input input-bordered w-full max-w-xs"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
           <textarea
             className="textarea textarea-bordered w-30 h-30 my-2"
             placeholder="..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
           />
           <div className="flex justify-end">
             <button className="btn" onClick={onSubmit}>

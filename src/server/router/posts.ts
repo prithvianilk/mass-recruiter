@@ -5,7 +5,8 @@ export const postsRouter = createRouter()
   .mutation('create-post', {
     input: z.object({
       userId: z.string(),
-      postBody: z.string(),
+      title: z.string(),
+      body: z.string(),
     }),
     async resolve({ ctx: { prisma }, input }) {
       return await prisma.post.create({
@@ -20,16 +21,18 @@ export const postsRouter = createRouter()
   })
   .mutation('edit-post', {
     input: z.object({
-      postId: z.string(),
-      postBody: z.string(),
+      id: z.string(),
+      title: z.string(),
+      body: z.string(),
     }),
-    async resolve({ ctx: { prisma }, input: { postId, postBody } }) {
+    async resolve({ ctx: { prisma }, input: { id, body, title } }) {
       return await prisma.post.update({
         where: {
-          id: postId,
+          id,
         },
         data: {
-          postBody: postBody,
+          title,
+          body,
         },
       });
     },
