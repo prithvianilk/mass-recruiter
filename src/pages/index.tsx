@@ -3,23 +3,23 @@ import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useState } from 'react';
-import PostEditTextBox from '../components/PostEditTextBox';
-import { PostListBox } from '../components/PostListBox';
+import CenterSpinner from '../components/CenterSpinner';
+import PlacementExperienceModal from '../components/PlacementExperienceModal';
+import { PostListView } from '../components/PostListView';
 import Toast from '../components/Toast';
 import UpcomingTestsSection from '../components/UpcomingTestsSection';
 
 const Home: NextPage = () => {
   const { data, status } = useSession();
+
   const [selectedTab, setSelectedTab] = useState<'EXPERIENCES' | 'TESTS'>(
     'EXPERIENCES'
   );
 
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+
   if (status === 'loading') {
-    return (
-      <div className="w-full h-screen flex justify-center items-center">
-        Loading...
-      </div>
-    );
+    return <CenterSpinner />;
   } else if (status === 'unauthenticated') {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -28,7 +28,7 @@ const Home: NextPage = () => {
     );
   }
 
-  const { name, image, id: userId } = data?.user!;
+  const { name, image } = data?.user!;
 
   return (
     <>
@@ -47,10 +47,7 @@ const Home: NextPage = () => {
             Open drawer
           </label> */}
           {selectedTab === 'EXPERIENCES' ? (
-            <div className="mt-20">
-              <PostEditTextBox userId={userId!} />
-              <PostListBox />
-            </div>
+            <PostListView openModal={() => setModalOpen(true)} />
           ) : (
             <UpcomingTestsSection />
           )}
@@ -86,6 +83,10 @@ const Home: NextPage = () => {
         </div>
       </div>
       <Toast />
+      <PlacementExperienceModal
+        isOpen={isModalOpen}
+        closeModal={() => setModalOpen(false)}
+      />
     </>
   );
 };
