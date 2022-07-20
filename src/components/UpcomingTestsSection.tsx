@@ -5,6 +5,7 @@ import { TbBellOff, TbBellRinging } from 'react-icons/tb';
 import { prettifyDate } from '../utils/date';
 import useStore from '../utils/store';
 import { trpc } from '../utils/trpc';
+import CenterErrorView from './CenterErrorView';
 import CenterSpinner from './CenterSpinner';
 
 type PlacementEventCardProps = PlacementEvent & {
@@ -156,9 +157,15 @@ const UpcomingTestsSection = () => {
     'placement.delete-registration'
   );
 
-  const { data: placementEvents, isLoading } = trpc.useQuery([
-    'placement.get-placement-upcoming-events',
-  ]);
+  const {
+    data: placementEvents,
+    isLoading,
+    isError,
+  } = trpc.useQuery(['placement.get-placement-upcoming-events']);
+
+  if (isError) {
+    return <CenterErrorView />;
+  }
 
   if (isLoading) {
     return <CenterSpinner />;

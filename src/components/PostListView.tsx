@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import { trpc } from '../utils/trpc';
+import CenterErrorView from './CenterErrorView';
 import CenterSpinner from './CenterSpinner';
 
 const MarkDownPreview = dynamic(() => import('@uiw/react-markdown-preview'), {
@@ -9,7 +10,15 @@ const MarkDownPreview = dynamic(() => import('@uiw/react-markdown-preview'), {
 export const PostListView: React.FC<{ openModal: () => void }> = ({
   openModal,
 }) => {
-  const { data: posts, isLoading } = trpc.useQuery(['posts.get-all-posts']);
+  const {
+    data: posts,
+    isLoading,
+    isError,
+  } = trpc.useQuery(['posts.get-all-posts']);
+
+  if (isError) {
+    return <CenterErrorView />;
+  }
 
   if (isLoading) {
     return <CenterSpinner />;
@@ -22,9 +31,12 @@ export const PostListView: React.FC<{ openModal: () => void }> = ({
       </button>
       <div className="mt-20">
         {posts?.map(({ id, title, body }) => (
-          <div key={id} className="p-2 my-5 border border-solid border-neutral rounded">
+          <div
+            key={id}
+            className="p-2 my-5 border border-solid border-neutral rounded"
+          >
             <h3 className="text-2xl mb-3">{title}</h3>
-            <MarkDownPreview className='p-6 rounded' source={body} />
+            <MarkDownPreview className="p-6 rounded" source={body} />
           </div>
         ))}
       </div>

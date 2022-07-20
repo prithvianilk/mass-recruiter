@@ -1,48 +1,56 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { createRouter } from './context';
 
 export const placementRouter = createRouter()
   .query('get-placement-upcoming-events', {
     async resolve({ ctx: { prisma, session } }) {
-      const userId = session?.user?.id;
-      const events = await prisma.placementEvent.findMany({
-        select: {
-          id: true,
-          companyName: true,
-          registrationDeadline: true,
-          registratonLink: true,
-          testTime: true,
-          PlacementEventUserRegistration: {
-            where: {
-              userId,
+      try {
+        const userId = session?.user?.id;
+        const events = await prisma.placementEvent.findMany({
+          select: {
+            id: true,
+            companyName: true,
+            registrationDeadline: true,
+            registratonLink: true,
+            testTime: true,
+            PlacementEventUserRegistration: {
+              where: {
+                userId,
+              },
+            },
+            PlacementEventUserNotification: {
+              where: {
+                userId,
+              },
             },
           },
-          PlacementEventUserNotification: {
-            where: {
-              userId,
-            },
-          },
-        },
-      });
-      return events.map(
-        ({
-          id,
-          companyName,
-          PlacementEventUserNotification,
-          PlacementEventUserRegistration,
-          registrationDeadline,
-          registratonLink,
-          testTime,
-        }) => ({
-          id,
-          companyName,
-          registrationDeadline,
-          registratonLink,
-          testTime,
-          wantsNotification: PlacementEventUserNotification.length > 0,
-          hasRegistered: PlacementEventUserRegistration.length > 0,
-        })
-      );
+        });
+        return events.map(
+          ({
+            id,
+            companyName,
+            PlacementEventUserNotification,
+            PlacementEventUserRegistration,
+            registrationDeadline,
+            registratonLink,
+            testTime,
+          }) => ({
+            id,
+            companyName,
+            registrationDeadline,
+            registratonLink,
+            testTime,
+            wantsNotification: PlacementEventUserNotification.length > 0,
+            hasRegistered: PlacementEventUserRegistration.length > 0,
+          })
+        );
+      } catch (error) {
+        console.log(`Error while getting all placement events: ${error}`);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+        });
+      }
     },
   })
   .mutation('notify-event', {

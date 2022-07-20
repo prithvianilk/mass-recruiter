@@ -1,5 +1,6 @@
 import { createRouter } from './context';
 import { z } from 'zod';
+import { TRPCError } from '@trpc/server';
 
 export const postsRouter = createRouter()
   .mutation('create-post', {
@@ -16,7 +17,15 @@ export const postsRouter = createRouter()
   })
   .query('get-all-posts', {
     async resolve({ ctx: { prisma } }) {
-      return await prisma.post.findMany();
+      try {
+        return await prisma.post.findMany();
+      } catch (error) {
+        console.log(`Error while getting all posts: ${error}`);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'We are facing a temporary issue. Please try again later.',
+        });
+      }
     },
   })
   .mutation('edit-post', {
