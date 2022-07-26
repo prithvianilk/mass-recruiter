@@ -39,7 +39,7 @@ const PlacementExperienceModal: React.FC<{
         <div className="modal-box w-11/12 max-w-5xl relative">
           <div className="flex justify-between">
             <h3 className="font-bold text-lg">
-              Share your Inverview Experience
+              Share your Interview Experience
             </h3>
             <label className="btn btn-sm btn-circle" onClick={closeModal}>
               ✕

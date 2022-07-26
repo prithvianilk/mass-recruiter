@@ -121,8 +121,8 @@ const PlacementEventCard: React.FC<PlacementEventCardProps> = ({
                       add(
                         <div key={`${id}-notify-toast`} className="alert">
                           We will {localWantsNotification && 'not '}
-                          notify you 2h before {companyName}'s registration form
-                          expires
+                          notify you 2h before {companyName}&apos;s registration
+                          form expires
                         </div>
                       );
                       setTimeout(remove, 3000);
