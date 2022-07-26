@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../server/db/client';
 import { twilioClient } from '../../../server/twilio/client';
 import { logger } from '../../../server/utils/logger';
+import { prettifyDate } from '../../../utils/date';
 
 const TWO_HOURS_IN_MILLISECONDS = 1000 * 60 * 60 * 2;
 
@@ -50,7 +51,9 @@ export default async function TwoHourNotifyCron(
         User: { mobileNumber },
       }) => {
         twilioClient.messages.create({
-          body: `${companyName}'s registration link is expiring at ${registrationDeadline}. Please register at ${registratonLink} now.`,
+          body: `${companyName}'s registration link is expiring at ${prettifyDate(
+            registrationDeadline
+          )}. Please register at ${registratonLink} now.`,
           from: 'whatsapp:+14155238886',
           to: `whatsapp:+91${mobileNumber}`,
         });

@@ -23,28 +23,38 @@ export const monthNames = [
   'December',
 ];
 
-
 export const prettifyDate = (date: Date) => {
   const day = date.getDate();
-  let hours = date.getHours();
-  const minutes = date.getMinutes();
-  let timeSub = 'PM';
-  const dayString = days[date.getDay()]?.slice(0, 3);
-  const monthString = monthNames[date.getMonth()]?.slice(0, 3);
-  if (hours < 12) {
-    timeSub = 'AM';
-  } else {
-    if (hours != 12) {
-      hours -= 12;
-    }
-  }
+
+  const lastDigitOfDay = day % 10;
+  const firstDigitOfDayIsOne = Math.floor(day / 10) === 1;
   let subscript = 'th';
-  if (day === 1) {
+  if (!firstDigitOfDayIsOne && lastDigitOfDay === 1) {
     subscript = 'st';
-  } else if (day === 2) {
+  } else if (!firstDigitOfDayIsOne && lastDigitOfDay === 2) {
     subscript = 'nd';
-  } else if (day === 3) {
+  } else if (!firstDigitOfDayIsOne && lastDigitOfDay === 3) {
     subscript = 'rd';
   }
+
+  const monthString = monthNames[date.getMonth()]?.slice(0, 3);
+  const dayString = days[date.getDay()]?.slice(0, 3);
+  let hours = date.getHours();
+
+  let minutes = date.getMinutes().toString();
+  if (minutes === '0') {
+    minutes = '00';
+  }
+
+  let timeSub = 'PM';
+  if (hours < 12) {
+    if (hours === 0) {
+      hours = 12;
+    }
+    timeSub = 'AM';
+  } else if (hours != 12) {
+    hours -= 12;
+  }
+
   return `${day}${subscript} ${monthString} (${dayString}) @ ${hours}:${minutes} ${timeSub}`;
 };
