@@ -25,11 +25,11 @@ export const PostListView: React.FC<{ openModal: () => void }> = ({
   }
 
   return (
-    <div className="w-2/3">
-      <button className="btn" onClick={openModal}>
-        open modal
+    <div className="w-11/12 md:w-2/3 mt-6">
+      <button className="btn w-full" onClick={openModal}>
+        Open Modal
       </button>
-      <div className="mt-20">
+      <div>
         {posts?.map(({ id, title, body }) => (
           <div
             key={id}

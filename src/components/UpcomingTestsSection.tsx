@@ -68,10 +68,17 @@ const PlacementEventCard: React.FC<PlacementEventCardProps> = ({
       <div className="divider" />
       <div className="flex justify-between">
         <div>
-          <div>Registration Deadline: {prettifyDate(registrationDeadline)}</div>
-          <div>Test Date: {prettifyDate(testTime)}</div>
+          <div className="pb-1">
+            <span className="font-bold">Registration Deadline: </span>
+            <br className="block md:hidden" />{' '}
+            {prettifyDate(registrationDeadline)}
+          </div>
+          <div className="pt-1">
+            <span className="font-bold">Test Date:</span>
+            <br className="block md:hidden" /> {prettifyDate(testTime)}
+          </div>
         </div>
-        <button className="flex justify-evenly w-1/6 text-yellow-300">
+        <button className="flex justify-evenly flex-col md:flex-row w-1/6 text-yellow-300">
           <div className="tooltip" data-tip="Click to confirm registration">
             <input
               type="checkbox"
@@ -113,8 +120,9 @@ const PlacementEventCard: React.FC<PlacementEventCardProps> = ({
                       setLocalWantsNotification(!localWantsNotification);
                       add(
                         <div key={`${id}-notify-toast`} className="alert">
-                          {localWantsNotification ? 'Removed' : 'Added'}{' '}
-                          Notification for {companyName}
+                          We will {localWantsNotification && 'not '}
+                          notify you 2h before {companyName}'s registration form
+                          expires
                         </div>
                       );
                       setTimeout(remove, 3000);

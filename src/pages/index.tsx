@@ -39,21 +39,39 @@ const Home: NextPage = () => {
       </Head>
       <div className="drawer drawer-mobile">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-        <div className="drawer-content w-full flex justify-center">
-          {/* <label
-            htmlFor="my-drawer-2"
-            className="btn btn-primary drawer-button lg:hidden"
-          >
-            Open drawer
-          </label> */}
-          {selectedTab === 'EXPERIENCES' ? (
-            <PostListView openModal={() => setModalOpen(true)} />
-          ) : (
-            <UpcomingTestsSection />
-          )}
+        <div className="drawer-content">
+          <div className="navbar flex justify-end bg-base-100 lg:hidden">
+            <div className="flex-none">
+              <label
+                htmlFor="my-drawer-2"
+                className="btn btn-square btn-ghost drawer-button"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  className="inline-block w-5 h-5 stroke-current"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16M4 18h16"
+                  ></path>
+                </svg>
+              </label>
+            </div>
+          </div>
+          <div className="flex justify-center">
+            {selectedTab === 'EXPERIENCES' ? (
+              <PostListView openModal={() => setModalOpen(true)} />
+            ) : (
+              <UpcomingTestsSection />
+            )}
+          </div>
         </div>
         <div className="drawer-side">
-          <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
+          <label htmlFor="my-drawer-2" className="drawer-overlay" />
           <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
             <div className="flex justify-evenly items-center">
               <h1 className="text-2xl text-center font-bold flex justify-center flex-col">
