@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { prisma } from '../../../server/db/client';
 import { twilioClient } from '../../../server/twilio/client';
+import { logger } from '../../../server/utils/logger';
 
 const TWO_HOURS_IN_MILLISECONDS = 1000 * 60 * 60 * 2;
 
@@ -12,7 +13,7 @@ export default async function TwoHourNotifyCron(
     new Date().getTime() + TWO_HOURS_IN_MILLISECONDS
   );
 
-  console.log('Received cron request at', postDeadline);
+  logger?.info('Received cron request');
 
   const notifyEvents = await prisma.placementEventUserNotification.findMany({
     where: {
@@ -40,7 +41,7 @@ export default async function TwoHourNotifyCron(
     },
   });
 
-  console.log(`Nofitications being sent: ${notifyEvents}`);
+  logger?.info('Notifications being sent: ', notifyEvents);
 
   await Promise.all(
     notifyEvents.map(
@@ -65,7 +66,7 @@ export default async function TwoHourNotifyCron(
     },
   });
 
-  console.log('Cron successfully processed!');
+  logger?.info('Cron successfully processed!');
 
   res.status(200);
   res.json({

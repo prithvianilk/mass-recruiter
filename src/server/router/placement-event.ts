@@ -1,5 +1,6 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { logger } from '../../server/utils/logger';
 import { createRouter } from './context';
 
 export const placementRouter = createRouter()
@@ -46,7 +47,7 @@ export const placementRouter = createRouter()
           })
         );
       } catch (error) {
-        console.log(`Error while getting all placement events: ${error}`);
+        logger?.error('Error while getting all placement events: ', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
         });

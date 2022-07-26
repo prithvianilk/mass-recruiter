@@ -1,6 +1,7 @@
-import { createRouter } from './context';
-import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
+import { logger } from '../../server/utils/logger';
+import { createRouter } from './context';
 
 export const postsRouter = createRouter()
   .mutation('create-post', {
@@ -20,7 +21,7 @@ export const postsRouter = createRouter()
       try {
         return await prisma.post.findMany();
       } catch (error) {
-        console.log(`Error while getting all posts: ${error}`);
+        logger?.error('Error while getting all posts: ', error);
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'We are facing a temporary issue. Please try again later.',
