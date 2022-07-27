@@ -6,7 +6,7 @@ import { prettifyDate } from '../../../utils/date';
 
 const TWO_HOURS_IN_MILLISECONDS = 1000 * 60 * 60 * 2;
 
-export default async function TwoHourNotifyCron(
+export default async function TwoHourNotifyForTestCron(
   _: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -16,10 +16,10 @@ export default async function TwoHourNotifyCron(
 
   logger?.info('Received cron request');
 
-  const notifyEvents = await prisma.placementEventUserNotification.findMany({
+  const notifyEvents = await prisma.placementEventUserRegistration.findMany({
     where: {
       PlacementEvent: {
-        testTime: {
+        registrationDeadline: {
           lte: postDeadline,
         },
       },
@@ -35,7 +35,8 @@ export default async function TwoHourNotifyCron(
         select: {
           id: true,
           companyName: true,
-          testTime: true,
+          registrationDeadline: true,
+          registratonLink: true,
         },
       },
     },
@@ -46,13 +47,13 @@ export default async function TwoHourNotifyCron(
   await Promise.all(
     notifyEvents.map(
       ({
-        PlacementEvent: { companyName, testTime },
+        PlacementEvent: { companyName, registrationDeadline, registratonLink },
         User: { mobileNumber },
       }) => {
         twilioClient.messages.create({
-          body: `${companyName}'s test is starting at ${prettifyDate(
-            testTime
-          )}. All the best!!`,
+          body: `${companyName}'s registration link is expiring at ${prettifyDate(
+            registrationDeadline
+          )}. Please register at ${registratonLink} now.`,
           from: 'whatsapp:+14155238886',
           to: `whatsapp:+91${mobileNumber}`,
         });
