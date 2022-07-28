@@ -65,9 +65,9 @@ const Home: NextPage = () => {
           <div className="flex justify-center">
             {selectedTab === 'EXPERIENCES' ? (
               <PostListView openModal={() => setModalOpen(true)} />
-            ) : (
+            ) : 
               <UpcomingTestsSection />
-            )}
+            }
           </div>
         </div>
         <div className="drawer-side">
