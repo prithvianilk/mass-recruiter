@@ -15,12 +15,12 @@ export const placementRouter = createRouter()
             registrationDeadline: true,
             registratonLink: true,
             testTime: true,
-            PlacementEventUserRegistration: {
+            PlacementEventUserTestNotification: {
               where: {
                 userId,
               },
             },
-            PlacementEventUserNotification: {
+            PlacementEventUserRegistrationNotification: {
               where: {
                 userId,
               },
@@ -31,8 +31,8 @@ export const placementRouter = createRouter()
           ({
             id,
             companyName,
-            PlacementEventUserNotification,
-            PlacementEventUserRegistration,
+            PlacementEventUserRegistrationNotification,
+            PlacementEventUserTestNotification,
             registrationDeadline,
             registratonLink,
             testTime,
@@ -42,8 +42,9 @@ export const placementRouter = createRouter()
             registrationDeadline,
             registratonLink,
             testTime,
-            wantsNotification: PlacementEventUserNotification.length > 0,
-            hasRegistered: PlacementEventUserRegistration.length > 0,
+            wantsNotification:
+              PlacementEventUserRegistrationNotification.length > 0,
+            hasRegistered: PlacementEventUserTestNotification.length > 0,
           })
         );
       } catch (error) {
@@ -60,7 +61,7 @@ export const placementRouter = createRouter()
       eventId: z.string(),
     }),
     async resolve({ ctx: { prisma }, input }) {
-      await prisma.placementEventUserNotification.create({
+      await prisma.placementEventUserRegistrationNotification.create({
         data: input,
       });
       return null;
@@ -72,7 +73,7 @@ export const placementRouter = createRouter()
       eventId: z.string(),
     }),
     async resolve({ ctx: { prisma }, input: { userId, eventId } }) {
-      await prisma.placementEventUserNotification.delete({
+      await prisma.placementEventUserRegistrationNotification.delete({
         where: { userId_eventId: { eventId, userId } },
       });
       return null;
@@ -83,9 +84,8 @@ export const placementRouter = createRouter()
       userId: z.string(),
       eventId: z.string(),
     }),
-
     async resolve({ ctx: { prisma }, input: { eventId, userId } }) {
-      await prisma.placementEventUserRegistration.create({
+      await prisma.placementEventUserTestNotification.create({
         data: { eventId, userId },
       });
       return null;
@@ -97,7 +97,7 @@ export const placementRouter = createRouter()
       eventId: z.string(),
     }),
     async resolve({ ctx: { prisma }, input: { eventId, userId } }) {
-      await prisma.placementEventUserRegistration.delete({
+      await prisma.placementEventUserTestNotification.delete({
         where: { userId_eventId: { eventId, userId } },
       });
       return null;

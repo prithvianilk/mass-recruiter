@@ -34,17 +34,17 @@ model Session {
 }
 
 model User {
-  id                             String                           @id @default(cuid())
-  name                           String?
-  email                          String?                          @unique
-  emailVerified                  DateTime?
-  image                          String?
-  mobileNumber                   String?
-  accounts                       Account[]
-  posts                          Post[]
-  sessions                       Session[]
-  PlacementEventUserNotification PlacementEventUserNotification[]
-  PlacementEventUserRegistration PlacementEventUserRegistration[]
+  id                                         String                                       @id @default(cuid())
+  name                                       String?
+  email                                      String?                                      @unique
+  emailVerified                              DateTime?
+  image                                      String?
+  mobileNumber                               String?
+  accounts                                   Account[]
+  posts                                      Post[]
+  sessions                                   Session[]
+  PlacementEventUserRegistrationNotification PlacementEventUserRegistrationNotification[]
+  PlacementEventUserTestNotification         PlacementEventUserTestNotification[]
 
   @@unique([id, name])
 }
@@ -66,16 +66,16 @@ model Post {
 }
 
 model PlacementEvent {
-  id                             String                           @id @default(cuid())
-  companyName                    String
-  registrationDeadline           DateTime
-  registratonLink                String
-  testTime                       DateTime
-  PlacementEventUserNotification PlacementEventUserNotification[]
-  PlacementEventUserRegistration PlacementEventUserRegistration[]
+  id                                         String                                       @id @default(cuid())
+  companyName                                String
+  registrationDeadline                       DateTime
+  registratonLink                            String
+  testTime                                   DateTime
+  PlacementEventUserRegistrationNotification PlacementEventUserRegistrationNotification[]
+  PlacementEventUserTestNotification         PlacementEventUserTestNotification[]
 }
 
-model PlacementEventUserNotification {
+model PlacementEventUserRegistrationNotification {
   id             String         @id @default(cuid())
   userId         String
   eventId        String
@@ -85,7 +85,7 @@ model PlacementEventUserNotification {
   @@unique([userId, eventId])
 }
 
-model PlacementEventUserRegistration {
+model PlacementEventUserTestNotification {
   id             String         @id @default(cuid())
   userId         String
   eventId        String

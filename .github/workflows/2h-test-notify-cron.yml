@@ -1,12 +1,12 @@
-name: Trigger whatsapp notification sending API for test
+name: Trigger test reminder whatsapp notification API
 
 on:
   schedule:
     - cron: '*/5 * * * *'
 jobs:
   build:
-    name: Trigger Whatsapp Notification for test every 5 min
+    name: Trigger Whatsapp Notification for test time every 5 min
     runs-on: ubuntu-latest
     steps:
       - name: cURL request
-        run: curl -X POST https://mass-recruiter.vercel.app/api/2h-before-test-cron
+        run: curl https://mass-recruiter.vercel.app/api/2h-test-notify-cron/
