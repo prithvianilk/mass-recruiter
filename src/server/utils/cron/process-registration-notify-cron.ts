@@ -15,6 +15,7 @@ export const processRegistrationNotificationCron = async () => {
             lte: twoHoursAfterDeadline,
           },
         },
+        User: { mobileNumber: { not: null } },
       },
       select: {
         id: true,

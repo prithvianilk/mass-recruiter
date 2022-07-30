@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import CenterErrorView from '../components/CenterErrorView';
 import CenterSpinner from '../components/CenterSpinner';
 import PlacementExperienceModal from '../components/PlacementExperienceModal';
@@ -30,6 +30,10 @@ const Home: NextPage = () => {
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    setHasCompletedSetup(hasCompletedSetup);
+  }, [hasCompletedSetup]);
+
   if (status === 'loading' || isLoading) {
     return <CenterSpinner />;
   } else if (isError) {
@@ -51,12 +55,16 @@ const Home: NextPage = () => {
   return (
     <>
       <div className="drawer drawer-mobile">
-        <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+        <input
+          id="mass-recruiter-drawer"
+          type="checkbox"
+          className="drawer-toggle"
+        />
         <div className="drawer-content">
           <div className="navbar flex justify-end bg-base-100 lg:hidden">
             <div className="flex-none">
               <label
-                htmlFor="my-drawer-2"
+                htmlFor="mass-recruiter-drawer"
                 className="btn btn-square btn-ghost drawer-button"
               >
                 <svg
@@ -84,7 +92,7 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="drawer-side">
-          <label htmlFor="my-drawer-2" className="drawer-overlay" />
+          <label htmlFor="mass-recruiter-drawer" className="drawer-overlay" />
           <ul className="menu p-4 overflow-y-auto w-80 bg-base-100 text-base-content">
             <div className="flex justify-evenly items-center">
               <h1 className="text-2xl text-center font-bold flex justify-center flex-col">

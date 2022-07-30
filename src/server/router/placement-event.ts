@@ -1,13 +1,26 @@
+import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { logger } from '../../server/utils/logger';
 import { createRouter } from './context';
+
+async function mobileNumberExists(prisma: PrismaClient, id: string) {
+  return !!(await prisma.user
+    .findUnique({
+      where: { id },
+      select: {
+        mobileNumber: true,
+      },
+    })
+    .then((user) => user?.mobileNumber));
+}
 
 export const placementRouter = createRouter()
   .query('get-placement-upcoming-events', {
     async resolve({ ctx: { prisma, session } }) {
       try {
         const userId = session?.user?.id;
+
         const events = await prisma.placementEvent.findMany({
           select: {
             id: true,
@@ -27,6 +40,7 @@ export const placementRouter = createRouter()
             },
           },
         });
+
         return events.map(
           ({
             id,
@@ -54,6 +68,18 @@ export const placementRouter = createRouter()
         });
       }
     },
+  })
+  .middleware(async ({ ctx: { prisma, session }, next }) => {
+    // Any queries or mutations after this middleware will
+    // raise an error unless that user's phone number exits
+    const id = session?.user?.id!;
+    if (!(await mobileNumberExists(prisma, id))) {
+      logger?.error(
+        `User with id: ${id} has not registered their mobile number`
+      );
+      throw new TRPCError({ code: 'FORBIDDEN' });
+    }
+    return next();
   })
   .mutation('notify-event', {
     input: z.object({
