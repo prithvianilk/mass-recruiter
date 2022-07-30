@@ -2,6 +2,8 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { createRouter } from './context';
 
+async function getHasCompletedSetup(id: string) {}
+
 export const authRouter = createRouter()
   .query('getSession', {
     resolve({ ctx }) {
@@ -30,8 +32,16 @@ export const authRouter = createRouter()
       return null;
     },
   })
-  .query('getSecretMessage', {
-    async resolve({ ctx }) {
-      return 'You are logged in and can see this secret message!';
+  .query('has-completed-setup', {
+    async resolve({ ctx: { prisma, session } }) {
+      const id = session?.user?.id;
+      return await prisma.user
+        .findFirst({
+          select: { hasCompletedSetup: true },
+          where: {
+            id: id,
+          },
+        })
+        .then((user) => user?.hasCompletedSetup);
     },
   });

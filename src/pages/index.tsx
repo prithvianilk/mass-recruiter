@@ -2,15 +2,27 @@ import type { NextPage } from 'next';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
+import CenterErrorView from '../components/CenterErrorView';
 import CenterSpinner from '../components/CenterSpinner';
 import PlacementExperienceModal from '../components/PlacementExperienceModal';
 import { PostListView } from '../components/PostListView';
 import SetupForm from '../components/SetupForm';
 import Toast from '../components/Toast';
 import UpcomingTestsSection from '../components/UpcomingTestsSection';
+import { trpc } from '../utils/trpc';
 
 const Home: NextPage = () => {
   const { data, status } = useSession();
+
+  const {
+    data: hasCompletedSetup,
+    isLoading,
+    isError,
+  } = trpc.useQuery(['auth.has-completed-setup']);
+
+  const [hasCompletedSetupLocal, setHasCompletedSetup] = useState<
+    boolean | undefined
+  >(hasCompletedSetup);
 
   const [selectedTab, setSelectedTab] = useState<'EXPERIENCES' | 'TESTS'>(
     'EXPERIENCES'
@@ -18,8 +30,10 @@ const Home: NextPage = () => {
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
-  if (status === 'loading') {
+  if (status === 'loading' || isLoading) {
     return <CenterSpinner />;
+  } else if (isError) {
+    return <CenterErrorView />;
   } else if (status === 'unauthenticated') {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -28,10 +42,10 @@ const Home: NextPage = () => {
     );
   }
 
-  const { name, image, hasCompletedSetup } = data?.user!;
+  const { name, image } = data?.user!;
 
-  if (!hasCompletedSetup) {
-    return <SetupForm />;
+  if (!hasCompletedSetupLocal) {
+    return <SetupForm setCompleted={() => setHasCompletedSetup(true)} />;
   }
 
   return (

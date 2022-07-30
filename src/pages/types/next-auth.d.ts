@@ -5,7 +5,6 @@ declare module 'next-auth' {
   interface Session {
     user?: {
       id?: string;
-      hasCompletedSetup?: boolean;
     } & DefaultSession['user'];
   }
 }

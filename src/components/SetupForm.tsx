@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { trpc } from '../utils/trpc';
 
@@ -5,7 +6,9 @@ type FormData = {
   mobileNumber: string;
 };
 
-const SetupForm: React.FC = () => {
+const SetupForm: React.FC<{ setCompleted: () => void }> = ({
+  setCompleted,
+}) => {
   const {
     register,
     handleSubmit,
@@ -18,6 +21,7 @@ const SetupForm: React.FC = () => {
 
   const onSubmit = async ({ mobileNumber }: FormData) => {
     await updateMobileNumber(mobileNumber);
+    setCompleted();
   };
 
   return (
