@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { z } from 'zod';
 import { createRouter } from './context';
 
 export const authRouter = createRouter()
@@ -14,6 +15,20 @@ export const authRouter = createRouter()
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
     return next();
+  })
+  .mutation('update-mobile-number', {
+    input: z.string(),
+    async resolve({ ctx: { session, prisma }, input: mobileNumber }) {
+      const id = session?.user?.id;
+      await prisma.user.update({
+        where: { id },
+        data: {
+          mobileNumber: mobileNumber,
+          hasCompletedSetup: true,
+        },
+      });
+      return null;
+    },
   })
   .query('getSecretMessage', {
     async resolve({ ctx }) {

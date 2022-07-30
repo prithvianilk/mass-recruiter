@@ -6,6 +6,7 @@ import { calculateDateTwoHoursAfterDate, TWILIO_NUMBER } from './common';
 
 export const processRegistrationNotificationCron = async () => {
   const twoHoursAfterDeadline = calculateDateTwoHoursAfterDate();
+
   const notifyEvents =
     await prisma.placementEventUserRegistrationNotification.findMany({
       where: {
