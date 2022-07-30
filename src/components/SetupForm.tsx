@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { trpc } from '../utils/trpc';
+import { AiFillInfoCircle } from 'react-icons/ai';
 
 type FormData = {
   mobileNumber: string;
@@ -26,7 +27,7 @@ const SetupForm: React.FC<{ setCompleted: () => void }> = ({
   return (
     <div className="h-screen flex justify-center items-center">
       <form
-        className="form-control w-full max-w-xs"
+        className="form-control w-full max-w-xs grid gap-1"
         onSubmit={handleSubmit(onSubmit)}
       >
         <label className="label">
@@ -42,9 +43,17 @@ const SetupForm: React.FC<{ setCompleted: () => void }> = ({
           })}
         />
         <label className="label">
-          <span className="label-text-alt">
+          <div className="label-text-alt w-full flex items-center">
             Why are you taking this information?
-          </span>
+            <span className="ml-2 text-lg">
+              <div
+                className="tooltip flex items-center"
+                data-tip="We need your mobile number to send Whatsapp notifications before tests and registration link expiry."
+              >
+                <AiFillInfoCircle />
+              </div>
+            </span>
+          </div>
         </label>
         <button type="submit" className="btn btn-primary">
           Submit

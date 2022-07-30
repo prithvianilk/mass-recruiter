@@ -35,22 +35,20 @@ const Home: NextPage = () => {
   const [isRegisterMobileModalOpen, setRegisterMobiletModalOpen] =
     useState<boolean>(false);
 
-  console.log(isRegisterMobileModalOpen);
-
   useEffect(() => {
     setHasCompletedSetup(hasCompletedSetup);
   }, [hasCompletedSetup]);
 
   if (status === 'loading' || isLoading) {
     return <CenterSpinner />;
-  } else if (isError) {
-    return <CenterErrorView />;
   } else if (status === 'unauthenticated') {
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <button onClick={() => signIn()}>Sign In</button>
       </div>
     );
+  } else if (isError) {
+    return <CenterErrorView />;
   }
 
   const { name, image } = data?.user!;
