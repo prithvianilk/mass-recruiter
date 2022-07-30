@@ -1,0 +1,3 @@
+export enum ErrorType {
+    NOT_REGISTERED_MOBILE_NUMBER = "NOT_REGISTERED_MOBILE_NUMBER",
+}

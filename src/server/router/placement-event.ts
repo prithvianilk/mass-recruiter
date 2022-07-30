@@ -1,13 +1,27 @@
+import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { logger } from '../../server/utils/logger';
+import { ErrorType } from '../utils/error/constants';
 import { createRouter } from './context';
+
+async function mobileNumberExists(prisma: PrismaClient, id: string) {
+  return !!(await prisma.user
+    .findUnique({
+      where: { id },
+      select: {
+        mobileNumber: true,
+      },
+    })
+    .then((user) => user?.mobileNumber));
+}
 
 export const placementRouter = createRouter()
   .query('get-placement-upcoming-events', {
     async resolve({ ctx: { prisma, session } }) {
       try {
         const userId = session?.user?.id;
+
         const events = await prisma.placementEvent.findMany({
           select: {
             id: true,
@@ -15,24 +29,25 @@ export const placementRouter = createRouter()
             registrationDeadline: true,
             registratonLink: true,
             testTime: true,
-            PlacementEventUserRegistration: {
+            PlacementEventUserTestNotification: {
               where: {
                 userId,
               },
             },
-            PlacementEventUserNotification: {
+            PlacementEventUserRegistrationNotification: {
               where: {
                 userId,
               },
             },
           },
         });
+
         return events.map(
           ({
             id,
             companyName,
-            PlacementEventUserNotification,
-            PlacementEventUserRegistration,
+            PlacementEventUserRegistrationNotification,
+            PlacementEventUserTestNotification,
             registrationDeadline,
             registratonLink,
             testTime,
@@ -42,8 +57,9 @@ export const placementRouter = createRouter()
             registrationDeadline,
             registratonLink,
             testTime,
-            wantsNotification: PlacementEventUserNotification.length > 0,
-            hasRegistered: PlacementEventUserRegistration.length > 0,
+            wantsNotification:
+              PlacementEventUserRegistrationNotification.length > 0,
+            hasRegistered: PlacementEventUserTestNotification.length > 0,
           })
         );
       } catch (error) {
@@ -54,13 +70,25 @@ export const placementRouter = createRouter()
       }
     },
   })
+  .middleware(async ({ ctx: { prisma, session }, next }) => {
+    // Any queries or mutations after this middleware will
+    // raise an error unless that user's phone number exits
+    const id = session?.user?.id!;
+    if (!(await mobileNumberExists(prisma, id))) {
+      logger?.error(
+        `User with id: ${id} has not registered their mobile number`
+      );
+      throw new TRPCError({ code: 'FORBIDDEN' , message: ErrorType.NOT_REGISTERED_MOBILE_NUMBER });
+    }
+    return next();
+  })
   .mutation('notify-event', {
     input: z.object({
       userId: z.string(),
       eventId: z.string(),
     }),
     async resolve({ ctx: { prisma }, input }) {
-      await prisma.placementEventUserNotification.create({
+      await prisma.placementEventUserRegistrationNotification.create({
         data: input,
       });
       return null;
@@ -72,7 +100,7 @@ export const placementRouter = createRouter()
       eventId: z.string(),
     }),
     async resolve({ ctx: { prisma }, input: { userId, eventId } }) {
-      await prisma.placementEventUserNotification.delete({
+      await prisma.placementEventUserRegistrationNotification.delete({
         where: { userId_eventId: { eventId, userId } },
       });
       return null;
@@ -83,9 +111,8 @@ export const placementRouter = createRouter()
       userId: z.string(),
       eventId: z.string(),
     }),
-
     async resolve({ ctx: { prisma }, input: { eventId, userId } }) {
-      await prisma.placementEventUserRegistration.create({
+      await prisma.placementEventUserTestNotification.create({
         data: { eventId, userId },
       });
       return null;
@@ -97,7 +124,7 @@ export const placementRouter = createRouter()
       eventId: z.string(),
     }),
     async resolve({ ctx: { prisma }, input: { eventId, userId } }) {
-      await prisma.placementEventUserRegistration.delete({
+      await prisma.placementEventUserTestNotification.delete({
         where: { userId_eventId: { eventId, userId } },
       });
       return null;

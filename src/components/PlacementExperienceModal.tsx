@@ -35,8 +35,17 @@ const PlacementExperienceModal: React.FC<{
 
   return (
     <>
-      <label className={`modal ${isOpen && 'modal-open'}`}>
-        <div className="modal-box w-11/12 max-w-5xl relative">
+      <input
+        id="post-modal"
+        onClick={closeModal}
+        type="checkbox"
+        className={`${!isOpen && 'hidden'}`}
+      />
+      <label
+        htmlFor="post-modal"
+        className={`modal ${isOpen && 'modal-open'} cursor-pointer`}
+      >
+        <label className="modal-box w-11/12 max-w-5xl relative" htmlFor="">
           <div className="flex justify-between">
             <h3 className="font-bold text-lg">
               Share your Interview Experience
@@ -64,7 +73,7 @@ const PlacementExperienceModal: React.FC<{
               Post
             </button>
           </div>
-        </div>
+        </label>
       </label>
     </>
   );
