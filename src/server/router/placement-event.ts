@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { logger } from '../../server/utils/logger';
+import { ErrorType } from '../utils/error/constants';
 import { createRouter } from './context';
 
 async function mobileNumberExists(prisma: PrismaClient, id: string) {
@@ -77,7 +78,7 @@ export const placementRouter = createRouter()
       logger?.error(
         `User with id: ${id} has not registered their mobile number`
       );
-      throw new TRPCError({ code: 'FORBIDDEN' });
+      throw new TRPCError({ code: 'FORBIDDEN' , message: ErrorType.NOT_REGISTERED_MOBILE_NUMBER });
     }
     return next();
   })

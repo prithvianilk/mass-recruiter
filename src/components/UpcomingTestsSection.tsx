@@ -2,6 +2,7 @@ import { PlacementEvent } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { TbBellOff, TbBellRinging } from 'react-icons/tb';
+import { ErrorType } from '../server/utils/error/constants';
 import { prettifyDate } from '../utils/date';
 import useStore from '../utils/store';
 import { trpc } from '../utils/trpc';
@@ -144,7 +145,9 @@ const PlacementEventCard: React.FC<PlacementEventCardProps> = ({
   );
 };
 
-const UpcomingTestsSection = () => {
+const UpcomingTestsSection: React.FC<{ openModal: () => void }> = ({
+  openModal,
+}) => {
   const { data } = useSession();
 
   const userId = data?.user?.id!;
@@ -187,21 +190,27 @@ const UpcomingTestsSection = () => {
     toggleState: () => void
   ) => {
     setDisabled(true);
-    if (type === 'NOTIFY') {
-      if (!state) {
-        await notifyEvent({ eventId, userId });
+    try {
+      if (type === 'NOTIFY') {
+        if (!state) {
+          await notifyEvent({ eventId, userId });
+        } else {
+          await unnotifyEvent({ eventId, userId });
+        }
       } else {
-        await unnotifyEvent({ eventId, userId });
+        if (state) {
+          await deleteRegistration({ eventId, userId });
+        } else {
+          await confirmRegistration({ eventId, userId });
+        }
       }
-    } else {
-      if (state) {
-        await deleteRegistration({ eventId, userId });
-      } else {
-        await confirmRegistration({ eventId, userId });
+      toggleState();
+    } catch ({ message }: any) {
+      if (message === ErrorType.NOT_REGISTERED_MOBILE_NUMBER) {
+        openModal();
       }
     }
     setDisabled(false);
-    toggleState();
   };
 
   return (

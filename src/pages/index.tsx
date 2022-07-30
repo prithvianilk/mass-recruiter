@@ -6,6 +6,7 @@ import CenterErrorView from '../components/CenterErrorView';
 import CenterSpinner from '../components/CenterSpinner';
 import PlacementExperienceModal from '../components/PlacementExperienceModal';
 import { PostListView } from '../components/PostListView';
+import RegisterMobileNumberModal from '../components/RegisterMobileNumberModal';
 import SetupForm from '../components/SetupForm';
 import Toast from '../components/Toast';
 import UpcomingTestsSection from '../components/UpcomingTestsSection';
@@ -28,7 +29,13 @@ const Home: NextPage = () => {
     'EXPERIENCES'
   );
 
-  const [isModalOpen, setModalOpen] = useState<boolean>(false);
+  const [isPostCreationModalOpen, setPostCreationModal] =
+    useState<boolean>(false);
+
+  const [isRegisterMobileModalOpen, setRegisterMobiletModalOpen] =
+    useState<boolean>(false);
+
+  console.log(isRegisterMobileModalOpen);
 
   useEffect(() => {
     setHasCompletedSetup(hasCompletedSetup);
@@ -85,9 +92,11 @@ const Home: NextPage = () => {
           </div>
           <div className="flex justify-center">
             {selectedTab === 'EXPERIENCES' ? (
-              <PostListView openModal={() => setModalOpen(true)} />
+              <PostListView openModal={() => setPostCreationModal(true)} />
             ) : (
-              <UpcomingTestsSection />
+              <UpcomingTestsSection
+                openModal={() => setRegisterMobiletModalOpen(true)}
+              />
             )}
           </div>
         </div>
@@ -123,8 +132,12 @@ const Home: NextPage = () => {
       </div>
       <Toast />
       <PlacementExperienceModal
-        isOpen={isModalOpen}
-        closeModal={() => setModalOpen(false)}
+        isOpen={isPostCreationModalOpen}
+        closeModal={() => setPostCreationModal(false)}
+      />
+      <RegisterMobileNumberModal
+        isOpen={isRegisterMobileModalOpen}
+        closeModal={() => setRegisterMobiletModalOpen(false)}
       />
     </>
   );
