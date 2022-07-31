@@ -5,8 +5,6 @@ import { logger } from '../logger';
 import { calculateDateTwoHoursAfterDate, TWILIO_NUMBER } from './common';
 
 export const processRegistrationNotificationCron = async () => {
-  logger?.info('Registration notification cron request received.');
-
   const twoHoursAfterDeadline = calculateDateTwoHoursAfterDate();
 
   const notifyEvents =
@@ -62,6 +60,4 @@ export const processRegistrationNotificationCron = async () => {
       id: { in: notifyEventIds },
     },
   });
-
-  logger?.info('Cron successfully processed!');
 };

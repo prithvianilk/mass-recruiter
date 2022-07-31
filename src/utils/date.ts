@@ -24,12 +24,16 @@ export const monthNames = [
 ];
 
 export const getMessageDate = (date: Date) => {
-  const dateInIndianTimeZone = new Date(
+  const dateInIndianTimeZone = convertToIndianTimeZone(date);
+  return prettifyDate(dateInIndianTimeZone);
+};
+
+export const convertToIndianTimeZone = (date: Date) => {
+  return new Date(
     date.toLocaleString('en-US', {
       timeZone: 'Asia/Kolkata',
     })
   );
-  return prettifyDate(dateInIndianTimeZone);
 };
 
 export const prettifyDate = (date: Date) => {

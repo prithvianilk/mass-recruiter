@@ -5,8 +5,6 @@ import { logger } from '../logger';
 import { calculateDateTwoHoursAfterDate, TWILIO_NUMBER } from './common';
 
 export const processTestNotificationCron = async () => {
-  logger?.info('Test notification cron request received.');
-
   const twoHoursAfterDeadline = calculateDateTwoHoursAfterDate();
 
   const notifyEvents = await prisma.placementEventUserTestNotification.findMany(
