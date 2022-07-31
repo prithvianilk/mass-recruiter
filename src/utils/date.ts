@@ -23,6 +23,19 @@ export const monthNames = [
   'December',
 ];
 
+export const getMessageDate = (date: Date) => {
+  const dateInIndianTimeZone = convertToIndianTimeZone(date);
+  return prettifyDate(dateInIndianTimeZone);
+};
+
+export const convertToIndianTimeZone = (date: Date) => {
+  return new Date(
+    date.toLocaleString('en-US', {
+      timeZone: 'Asia/Kolkata',
+    })
+  );
+};
+
 export const prettifyDate = (date: Date) => {
   const day = date.getDate();
 

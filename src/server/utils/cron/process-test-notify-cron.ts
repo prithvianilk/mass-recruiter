@@ -1,4 +1,4 @@
-import { prettifyDate } from '../../../utils/date';
+import { getMessageDate } from '../../../utils/date';
 import { prisma } from '../../db/client';
 import { twilioClient } from '../../twilio/client';
 import { logger } from '../logger';
@@ -43,10 +43,9 @@ export const processTestNotificationCron = async () => {
         PlacementEvent: { companyName, testTime },
         User: { mobileNumber },
       }) => {
+        const messageDate = getMessageDate(testTime);
         twilioClient.messages.create({
-          body: `${companyName}'s test is starting at ${prettifyDate(
-            testTime
-          )}. All the best!`,
+          body: `${companyName}'s test is starting at ${messageDate}. All the best!`,
           from: `whatsapp:${TWILIO_NUMBER}`,
           to: `whatsapp:+91${mobileNumber}`,
         });

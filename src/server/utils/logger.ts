@@ -1,4 +1,5 @@
 import winston, { Logger } from 'winston';
+import { convertToIndianTimeZone } from '../../utils/date';
 
 declare global {
   var logger: Logger | undefined;
@@ -9,7 +10,10 @@ export const logger =
   winston.createLogger({
     level: 'info',
     format: winston.format.combine(
-      winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
+      winston.format.timestamp({
+        format: () => convertToIndianTimeZone(new Date()).toLocaleString(),
+        alias: '',
+      }),
       winston.format.prettyPrint(),
       winston.format.json()
     ),
