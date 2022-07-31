@@ -1,10 +1,12 @@
-import { prettifyDate } from '../../../utils/date';
+import { getMessageDate } from '../../../utils/date';
 import { prisma } from '../../db/client';
 import { twilioClient } from '../../twilio/client';
 import { logger } from '../logger';
 import { calculateDateTwoHoursAfterDate, TWILIO_NUMBER } from './common';
 
 export const processRegistrationNotificationCron = async () => {
+  logger?.info('Registration notification cron request received.');
+
   const twoHoursAfterDeadline = calculateDateTwoHoursAfterDate();
 
   const notifyEvents =
@@ -43,10 +45,9 @@ export const processRegistrationNotificationCron = async () => {
         PlacementEvent: { companyName, registrationDeadline, registratonLink },
         User: { mobileNumber },
       }) => {
+        const messageDate = getMessageDate(registrationDeadline);
         twilioClient.messages.create({
-          body: `${companyName}'s registration link is expiring at ${prettifyDate(
-            registrationDeadline
-          )}. Please register at ${registratonLink} now.`,
+          body: `${companyName}'s registration link is expiring at ${messageDate}. Please register at ${registratonLink} now.`,
           from: `whatsapp:${TWILIO_NUMBER}`,
           to: `whatsapp:+91${mobileNumber}`,
         });

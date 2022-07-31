@@ -1,10 +1,12 @@
-import { prettifyDate } from '../../../utils/date';
+import { getMessageDate } from '../../../utils/date';
 import { prisma } from '../../db/client';
 import { twilioClient } from '../../twilio/client';
 import { logger } from '../logger';
 import { calculateDateTwoHoursAfterDate, TWILIO_NUMBER } from './common';
 
 export const processTestNotificationCron = async () => {
+  logger?.info('Test notification cron request received.');
+
   const twoHoursAfterDeadline = calculateDateTwoHoursAfterDate();
 
   const notifyEvents = await prisma.placementEventUserTestNotification.findMany(
@@ -43,10 +45,9 @@ export const processTestNotificationCron = async () => {
         PlacementEvent: { companyName, testTime },
         User: { mobileNumber },
       }) => {
+        const messageDate = getMessageDate(testTime);
         twilioClient.messages.create({
-          body: `${companyName}'s test is starting at ${prettifyDate(
-            testTime
-          )}. All the best!`,
+          body: `${companyName}'s test is starting at ${messageDate}. All the best!`,
           from: `whatsapp:${TWILIO_NUMBER}`,
           to: `whatsapp:+91${mobileNumber}`,
         });
