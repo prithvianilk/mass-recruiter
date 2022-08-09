@@ -45,7 +45,7 @@ export const processTestNotificationCron = async () => {
       }) => {
         const messageDate = getMessageDate(testTime);
         twilioClient.messages.create({
-          body: `${companyName}'s test is starting at ${messageDate}. All the best!`,
+          body: `Your ${companyName} appointment is coming up on ${testTime}`,
           from: `whatsapp:${TWILIO_NUMBER}`,
           to: `whatsapp:+91${mobileNumber}`,
         });

@@ -45,7 +45,7 @@ export const processRegistrationNotificationCron = async () => {
       }) => {
         const messageDate = getMessageDate(registrationDeadline);
         twilioClient.messages.create({
-          body: `${companyName}'s registration link is expiring at ${messageDate}. Please register at ${registratonLink} now.`,
+          body: `Your ${companyName} appointment is coming up on ${registrationDeadline + " @ " + registratonLink}`,
           from: `whatsapp:${TWILIO_NUMBER}`,
           to: `whatsapp:+91${mobileNumber}`,
         });
