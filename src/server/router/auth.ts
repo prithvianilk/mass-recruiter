@@ -19,7 +19,7 @@ export const authRouter = createRouter()
     return next();
   })
   .mutation('update-mobile-number', {
-    input: z.string(),
+    input: z.string().nullable(),
     async resolve({ ctx: { session, prisma }, input: mobileNumber }) {
       const id = session?.user?.id;
       await prisma.user.update({
